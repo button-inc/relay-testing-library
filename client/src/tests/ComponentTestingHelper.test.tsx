@@ -9,7 +9,7 @@ import compiledTodoListQuery, {
   ComponentTestingHelperQuery,
 } from "./__generated__/ComponentTestingHelperQuery.graphql";
 import TodoList from "../components/TodoList";
-import { screen } from "@testing-library/react";
+import { act, screen, render } from "@testing-library/react";
 
 const testQuery = graphql`
   query ComponentTestingHelperQuery @relay_test_operation {
@@ -24,8 +24,18 @@ const testQuery = graphql`
 const mockQueryPayload = {
   ComponentTestingHelperQuery() {
     const result: any = {
-      id: "Test ID",
-      rowId: 1234,
+      allTodos: {
+        edges: {
+          node: {
+            id: "1",
+            node: {
+              id: "1",
+              task: "eat cake",
+              completed: true,
+            },
+          },
+        },
+      },
     };
     return result;
   },
@@ -62,42 +72,5 @@ describe("TestingHelper", () => {
     expect(componentTestingHelper.rerenderComponent).toEqual(
       expect.any(Function)
     );
-  });
-
-  it("loads the query", () => {
-    const componentTestingHelper =
-      new ComponentTestingHelper<ComponentTestingHelperQuery>({
-        component: TodoList,
-        testQuery: testQuery,
-        compiledQuery: compiledTodoListQuery,
-        defaultQueryResolver: mockQueryPayload,
-        defaultQueryVariables: {},
-        defaultComponentProps: defaultComponentProps,
-      });
-    componentTestingHelper.loadQuery();
-    console.log(
-      "componentTestingHelper.loadQuery();",
-      componentTestingHelper.loadQuery()
-    );
-    // brianna how to best test this?
-  });
-
-  it.only("renders the component", () => {
-    const componentTestingHelper =
-      new ComponentTestingHelper<ComponentTestingHelperQuery>({
-        component: TodoList,
-        testQuery: testQuery,
-        compiledQuery: compiledTodoListQuery,
-        getPropsFromTestQuery: (data) => ({
-          query: data,
-        }),
-        defaultQueryResolver: mockQueryPayload,
-        defaultQueryVariables: {},
-        defaultComponentProps: defaultComponentProps,
-      });
-    componentTestingHelper.reinit();
-    componentTestingHelper.loadQuery();
-    componentTestingHelper.renderComponent();
-    expect(screen.getByText("Todo")).toBeInTheDocument();
   });
 });
