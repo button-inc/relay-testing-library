@@ -13,7 +13,7 @@ type Props = {
     query: any
 }
 
-function TodoList(props: Props) {
+function TodoList({query}: Props) {
 
     const data = useFragment(
         // underscore matches prop name, convention in this project to use _query if its of type Query (type comes from postgraphile)
@@ -30,7 +30,7 @@ function TodoList(props: Props) {
               }
             }
         `,
-        props.query,
+        query,
       );
 
       const listItems = data.allTodos.edges.map(todo => 

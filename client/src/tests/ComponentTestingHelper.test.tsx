@@ -9,7 +9,7 @@ import compiledTodoListQuery, {
   ComponentTestingHelperQuery,
 } from "./__generated__/ComponentTestingHelperQuery.graphql";
 import TodoList from "../components/TodoList";
-import { act, screen, render } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
 const testQuery = graphql`
   query ComponentTestingHelperQuery @relay_test_operation {
