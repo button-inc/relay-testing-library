@@ -1,6 +1,7 @@
 /**
  * @jest-environment jsdom
  */
+import "@testing-library/jest-dom";
 
 import React from "react";
 import ComponentTestingHelper from "./ComponentTestingHelper";
@@ -21,23 +22,22 @@ const testQuery = graphql`
 `;
 
 // This needs to match what we queried in our test query
+// fix brianna
 const mockQueryPayload = {
   ComponentTestingHelperQuery() {
-    const result: any = {
+    return {
       allTodos: {
-        edges: {
-          node: {
-            id: "1",
+        edges: [
+          {
             node: {
               id: "1",
-              task: "eat cake",
+              task: "test operator",
               completed: true,
             },
           },
-        },
+        ],
       },
     };
-    return result;
   },
 };
 
@@ -45,7 +45,7 @@ const defaultComponentProps = {
   onSubmit: jest.fn(),
 };
 
-describe("TestingHelper", () => {
+describe("ComponentTestingHelper", () => {
   beforeEach(() => {
     jest.restoreAllMocks();
   });
@@ -57,7 +57,7 @@ describe("TestingHelper", () => {
         testQuery: testQuery,
         compiledQuery: compiledTodoListQuery,
         getPropsFromTestQuery: (data) => ({
-          query: data,
+          query: data.query,
         }),
         defaultQueryResolver: mockQueryPayload,
         defaultQueryVariables: {},
@@ -72,5 +72,42 @@ describe("TestingHelper", () => {
     expect(componentTestingHelper.rerenderComponent).toEqual(
       expect.any(Function)
     );
+  });
+
+  it("loads the query", () => {
+    const componentTestingHelper =
+      new ComponentTestingHelper<ComponentTestingHelperQuery>({
+        component: TodoList,
+        testQuery: testQuery,
+        compiledQuery: compiledTodoListQuery,
+        getPropsFromTestQuery: (data) => ({
+          query: data.query,
+        }),
+        defaultQueryResolver: mockQueryPayload,
+        defaultQueryVariables: {},
+        defaultComponentProps: defaultComponentProps,
+      });
+    console.log("before", componentTestingHelper.environment);
+    componentTestingHelper.loadQuery();
+    console.log("after", componentTestingHelper.environment);
+  });
+
+  it("loads renders the page", () => {
+    const componentTestingHelper =
+      new ComponentTestingHelper<ComponentTestingHelperQuery>({
+        component: TodoList,
+        testQuery: testQuery,
+        compiledQuery: compiledTodoListQuery,
+        getPropsFromTestQuery: (data) => ({
+          query: data.query,
+        }),
+        defaultQueryResolver: mockQueryPayload,
+        defaultQueryVariables: {},
+        defaultComponentProps: defaultComponentProps,
+      });
+    componentTestingHelper.loadQuery();
+    componentTestingHelper.renderComponent();
+    expect(screen.getByText("zzzzz")).toBeInTheDocument();
+    expect(screen.getByText("To-do App")).toBeInTheDocument();
   });
 });
