@@ -2,15 +2,14 @@
  * @jest-environment jsdom
  */
 import "@testing-library/jest-dom";
-
-import React from "react";
+import { screen } from "@testing-library/react";
+import { commitMutation, graphql } from "react-relay";
+import TodoList from "../components/TodoList";
+import CreateTodoMutation from "../components/__generated__/CreateTodoMutation.graphql";
 import ComponentTestingHelper from "./ComponentTestingHelper";
-import { graphql } from "react-relay";
 import compiledTodoListQuery, {
   ComponentTestingHelperQuery,
 } from "./__generated__/ComponentTestingHelperQuery.graphql";
-import TodoList from "../components/TodoList";
-import { act, screen, render } from "@testing-library/react";
 
 const testQuery = graphql`
   query ComponentTestingHelperQuery @relay_test_operation {
@@ -21,8 +20,6 @@ const testQuery = graphql`
   }
 `;
 
-// This needs to match what we queried in our test query
-// fix brianna
 const mockQueryPayload = {
   Query() {
     return {
@@ -45,24 +42,26 @@ const defaultComponentProps = {
   onSubmit: jest.fn(),
 };
 
+const componentTestingHelper =
+  new ComponentTestingHelper<ComponentTestingHelperQuery>({
+    component: TodoList,
+    testQuery: testQuery,
+    compiledQuery: compiledTodoListQuery,
+    getPropsFromTestQuery: (data) => ({
+      query: data.query,
+    }),
+    defaultQueryResolver: mockQueryPayload,
+    defaultQueryVariables: {},
+    defaultComponentProps: defaultComponentProps,
+  });
+
 describe("ComponentTestingHelper", () => {
   beforeEach(() => {
     jest.restoreAllMocks();
+    componentTestingHelper.reinit();
   });
 
   it("initializes the component testing helper", () => {
-    const componentTestingHelper =
-      new ComponentTestingHelper<ComponentTestingHelperQuery>({
-        component: TodoList,
-        testQuery: testQuery,
-        compiledQuery: compiledTodoListQuery,
-        getPropsFromTestQuery: (data) => ({
-          query: data.query,
-        }),
-        defaultQueryResolver: mockQueryPayload,
-        defaultQueryVariables: {},
-        defaultComponentProps: defaultComponentProps,
-      });
     expect(componentTestingHelper.environment).toEqual(expect.anything());
     expect(componentTestingHelper.expectMutationToBeCalled).toBeInstanceOf(
       Function
@@ -75,40 +74,56 @@ describe("ComponentTestingHelper", () => {
   });
 
   it("loads the query", () => {
-    const componentTestingHelper =
-      new ComponentTestingHelper<ComponentTestingHelperQuery>({
-        component: TodoList,
-        testQuery: testQuery,
-        compiledQuery: compiledTodoListQuery,
-        getPropsFromTestQuery: (data) => ({
-          query: data.query,
-        }),
-        defaultQueryResolver: mockQueryPayload,
-        defaultQueryVariables: {},
-        defaultComponentProps: defaultComponentProps,
-      });
     componentTestingHelper.loadQuery();
     expect(
-      componentTestingHelper.environment.mock.getAllOperations()[0].root.node.name).toEqual(
-      'ComponentTestingHelperQuery');
+      componentTestingHelper.environment.mock.getAllOperations()[0].root.node
+        .name
+    ).toEqual("ComponentTestingHelperQuery");
   });
 
-  it("loads renders the page", () => {
-    const componentTestingHelper =
-      new ComponentTestingHelper<ComponentTestingHelperQuery>({
-        component: TodoList,
-        testQuery: testQuery,
-        compiledQuery: compiledTodoListQuery,
-        getPropsFromTestQuery: (data) => ({
-          query: data.query,
-        }),
-        defaultQueryResolver: mockQueryPayload,
-        defaultQueryVariables: {},
-        defaultComponentProps: defaultComponentProps,
-      });
+  it("renders the component", () => {
     componentTestingHelper.loadQuery();
     componentTestingHelper.renderComponent();
     expect(screen.getByText("test operator")).toBeInTheDocument();
   });
 
+  it("expectMutationToBeCalled function returns a message when the expected mutation is not called", () => {
+    commitMutation(componentTestingHelper.environment, {
+      mutation: CreateTodoMutation,
+      variables: {},
+    });
+
+    expect(() => {
+      componentTestingHelper.expectMutationToBeCalled("testMutation", {});
+    }).toThrow(
+      `Expected mutation testMutation to be called. Mutations called:\n` +
+        `CreateTodoMutation`
+    );
+  });
+
+  it("expectMutationToBeCalled function returns a message when the expected variables are not returned", () => {
+    commitMutation(componentTestingHelper.environment, {
+      mutation: CreateTodoMutation,
+      variables: { connections: "test", input: "test" },
+    });
+
+    expect(() => {
+      componentTestingHelper.expectMutationToBeCalled("CreateTodoMutation", {
+        test: "iwillfail",
+      });
+    }).toThrow(
+      `Expected mutation CreateTodoMutation to be called with:` +
+        `
+{
+  "test": "iwillfail"
+}` +
+        `
+received:
+` +
+        `{
+  "connections": "test",
+  "input": "test"
+}`
+    );
+  });
 });
