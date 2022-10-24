@@ -87,9 +87,10 @@ describe("ComponentTestingHelper", () => {
         defaultQueryVariables: {},
         defaultComponentProps: defaultComponentProps,
       });
-    // console.log("before", componentTestingHelper.environment);
     componentTestingHelper.loadQuery();
-    // console.log("after", componentTestingHelper.environment);
+    expect(
+      componentTestingHelper.environment.mock.getAllOperations()[0].root.node.name).toEqual(
+      'ComponentTestingHelperQuery');
   });
 
   it("loads renders the page", () => {
@@ -107,7 +108,6 @@ describe("ComponentTestingHelper", () => {
       });
     componentTestingHelper.loadQuery();
     componentTestingHelper.renderComponent();
-    screen.logTestingPlaygroundURL();
     expect(screen.getByText("test operator")).toBeInTheDocument();
   });
 

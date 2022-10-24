@@ -64,8 +64,6 @@ class ComponentTestingHelper<
       this.options.testQuery,
       this.options.defaultQueryVariables
     );
-    console.log("this.options", this.options);
-    console.log("this.options.component", this.options.component);
     const Component = this.options.component;
     return <Component {...getPropsFromTestQuery(data)} {...extraProps} />;
   };
