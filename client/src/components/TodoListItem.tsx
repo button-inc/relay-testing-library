@@ -21,8 +21,6 @@ mutation TodoListItemUpdateMutation (
     }
   }
 }
-
-
 `;
 
 function TodoListItem(props: Props) {

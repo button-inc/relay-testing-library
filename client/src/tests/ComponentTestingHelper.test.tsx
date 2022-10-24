@@ -24,7 +24,7 @@ const testQuery = graphql`
 // This needs to match what we queried in our test query
 // fix brianna
 const mockQueryPayload = {
-  ComponentTestingHelperQuery() {
+  Query() {
     return {
       allTodos: {
         edges: [
@@ -87,9 +87,9 @@ describe("ComponentTestingHelper", () => {
         defaultQueryVariables: {},
         defaultComponentProps: defaultComponentProps,
       });
-    console.log("before", componentTestingHelper.environment);
+    // console.log("before", componentTestingHelper.environment);
     componentTestingHelper.loadQuery();
-    console.log("after", componentTestingHelper.environment);
+    // console.log("after", componentTestingHelper.environment);
   });
 
   it("loads renders the page", () => {
@@ -107,7 +107,8 @@ describe("ComponentTestingHelper", () => {
       });
     componentTestingHelper.loadQuery();
     componentTestingHelper.renderComponent();
-    expect(screen.getByText("zzzzz")).toBeInTheDocument();
-    expect(screen.getByText("To-do App")).toBeInTheDocument();
+    screen.logTestingPlaygroundURL();
+    expect(screen.getByText("test operator")).toBeInTheDocument();
   });
+
 });
