@@ -41,8 +41,73 @@ const testQuery = graphql`
 
 1. Run your relay compiler to create the `ComponentTestQuery`
 
-1. In `Component.test.tsx`, import
+1. In `Component.test.tsx`, import the ComponentTestingHelperQuery.graphql from "./__generated__/ComponentTestingHelperQuery.graphql"
 
+1. In `Component.test.tsx`, create a `mockQueryPayload` to mock some data to be passed to the component you want to test. It needs to match the
+schema of the testQuery
+
+```typescript
+const mockQueryPayload = {
+  Query() {
+    return {
+      allItems: {
+        edges: [
+          {
+            node: {
+              id: "1",
+              description: "this is a test",
+            },
+          },
+        ],
+      },
+    };
+  },
+};
+```
+
+1. Create `defaultComponentProps` for the Component that is being tested
+
+```typescript
+const defaultComponentProps = {
+  onSubmit: jest.fn(),
+};
+```
+
+1. Instantiate the `componentTestingHelper`
+```typescript
+const componentTestingHelper =
+  new ComponentTestingHelper<ComponentTestingHelperQuery>({
+    component: Component,
+    testQuery: testQuery,
+    compiledQuery: compiledComponentQuery,  // where does this compiled query come from ? 
+    getPropsFromTestQuery: (data) => ({
+      query: data.query,
+    }),
+    defaultQueryResolver: mockQueryPayload,
+    defaultQueryVariables: {},
+    defaultComponentProps: defaultComponentProps,
+  });
+```
+
+1. Create the test suite, ensuring to call reinit on the componentTestingHelper in the beforeEach block
+```typescript 
+describe("the test suite", () => {
+  beforeEach(() => {
+    // reinit the helper before each test
+    componentTestingHelper.reinit();
+  });
+  it(...){
+    componentTestingHelper.loadQuery()
+    componentTestingHelper.renderComponent() // or if you need extra props for a particular test: componentTestingHelper.renderComponent(undefined, {...defaultComponentProps, extraProps })
+
+    ... same testing as with the page helper ...
+  }
+})
+```
+
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------
 ### Example
 
 ```typescript
@@ -74,7 +139,7 @@ const testQuery = graphql`
 
 // This needs to match what we queried in our test query
 const mockQueryPayload = {
-  ProjectRevision() {
+  Query() {
     const result: ProjectContactForm_projectRevision = {
       " $fragmentType": "ProjectContactForm_projectRevision",
       id: "Test Project Revision ID",
