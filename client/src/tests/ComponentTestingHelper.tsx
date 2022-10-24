@@ -73,6 +73,14 @@ class ComponentTestingHelper<
       .getPropsFromTestQuery,
     extraProps: any = this.options.defaultComponentProps
   ) {
+    // create container 
+
+    // create root
+    // const root = createRoot(container!);
+
+    // root.render
+
+
     this.renderResult = render(
       <RelayEnvironmentProvider environment={this.environment}>
         <this.TestRenderer
