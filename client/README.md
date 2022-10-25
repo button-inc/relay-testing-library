@@ -10,24 +10,28 @@ The `ComponentTestingHelper` class provides the following:
 - `expectMutationToBeCalled(mutation_name, variables_mutation_should_be_called with)` - checks if the expected mutation was called; optionally checks if it was called with the correct variables
 - `rerenderComponent` - ??
 
-### How-to
+### How to use the Component Testing Helper in a Test File
 
-1. Create a jest test file called `Component.test.tsx`
+Where `Component` is the name of the component under test:
 
-1. In `Component.test.tsx`, import the Component Testing Helper:
+1. Create a jest test file called `Component.test.tsx`. All of the following instructions should be done in this file above the `describe` block unless indicated otherwise.
+
+1. Import the Component Testing Helper:
 
 `import ComponentTestingHelper from "@??";`
 
-1. In `Component.test.tsx`, import the component and mutation(s) you want to test:
+1. Import the component and mutation(s) you want to test:
 
 ```typescript
 import Component from "path_to_component";
 import Mutation from "path_to_mutation";
 ```
 
-1. In `Component.test.tsx`, create a `testQuery`.
+1. Create a `testQuery`:
 
 ```typescript
+// The query mimics a page that contains that component,
+// we craft a test query that uses the fragments of the component we're testing.
 const testQuery = graphql`
   # Add 'Test' before 'Query'
   query ComponentTestQuery @relay_test_operation {
@@ -39,14 +43,20 @@ const testQuery = graphql`
 `;
 ```
 
-1. Run your relay compiler to create the `ComponentTestQuery`
+1. Run your relay compiler to generate the `ComponentTestQuery`-associated files
 
-1. In `Component.test.tsx`, import the ComponentTestingHelperQuery.graphql from "./__generated__/ComponentTestingHelperQuery.graphql"
-
-1. In `Component.test.tsx`, create a `mockQueryPayload` to mock some data to be passed to the component you want to test. It needs to match the
-schema of the testQuery
+1. Import the compiled query (default export) and `ComponentTestQuery` from `./**generated**/ComponentTestingHelperQuery.graphql`
 
 ```typescript
+import compiledComponentTestQuery, {
+  ComponentTestQuery,
+} from "./**generated**/ComponentTestQuery.graphql";
+```
+
+1. Create a `mockQueryPayload` to mock some data to be passed to the component you want to test. It needs to match the schema of the `testQuery`. For example:
+
+```typescript
+// This needs to match what we queried in our test query
 const mockQueryPayload = {
   Query() {
     return {
@@ -65,7 +75,11 @@ const mockQueryPayload = {
 };
 ```
 
-1. Create `defaultComponentProps` for the Component that is being tested
+1. If desired, create `getPropsFromTestQuery` ??
+
+1. If desired, create `defaultQueryVariables` ??
+
+1. If desired, create `defaultComponentProps` for the component that is being tested. For example:
 
 ```typescript
 const defaultComponentProps = {
@@ -74,40 +88,42 @@ const defaultComponentProps = {
 ```
 
 1. Instantiate the `componentTestingHelper`
+
 ```typescript
-const componentTestingHelper =
-  new ComponentTestingHelper<ComponentTestingHelperQuery>({
-    component: Component,
-    testQuery: testQuery,
-    compiledQuery: compiledComponentQuery,  // where does this compiled query come from ? 
-    getPropsFromTestQuery: (data) => ({
-      query: data.query,
-    }),
-    defaultQueryResolver: mockQueryPayload,
-    defaultQueryVariables: {},
-    defaultComponentProps: defaultComponentProps,
-  });
+const componentTestingHelper = new ComponentTestingHelper<ComponentTestQuery>({
+  component: Component,
+  testQuery: testQuery,
+  compiledQuery: compiledComponentQuery,
+  getPropsFromTestQuery: (data) => ({
+    // This is how to build the props for the component we're testing, based on our test query
+    query: data.query,
+  }),
+  defaultQueryResolver: mockQueryPayload,
+  defaultQueryVariables: {},
+  // Additional default props for the component
+  defaultComponentProps: defaultComponentProps,
+});
 ```
 
-1. Create the test suite, ensuring to call reinit on the componentTestingHelper in the beforeEach block
-```typescript 
+1. Create the test suite, ensuring to call `reinit` on the `componentTestingHelper` in the `beforeEach` block
+
+```typescript
 describe("the test suite", () => {
   beforeEach(() => {
     // reinit the helper before each test
     componentTestingHelper.reinit();
   });
   it(...){
-    componentTestingHelper.loadQuery()
+    componentTestingHelper.loadQuery() // or if you need a different mock query than the default, componentTestingHelper.loadQuery(different_mock_query)
     componentTestingHelper.renderComponent() // or if you need extra props for a particular test: componentTestingHelper.renderComponent(undefined, {...defaultComponentProps, extraProps })
 
-    ... same testing as with the page helper ...
+
   }
 })
 ```
 
-
-
 // ----------------------------------------------------------------------------------------------------------------------------------------
+
 ### Example
 
 ```typescript
@@ -115,13 +131,6 @@ import ProjectContactForm from "components/Form/ProjectContactForm";
 import compiledProjectContactFormQuery, {
   ProjectContactFormQuery,
 } from "__generated__/ProjectContactFormQuery.graphql";
-
-import ComponentTestingHelper from "@TBD";
-import ComponentUnderTest from "path_to_component";
-import MutationUnderTest from "path_to_mutation";
-import compiledComponetUnderTestQuery, {
-  ComponentTestingHelperQuery,
-} from "./__generated__/ComponentTestingHelperQuery.graphql";
 
 // The query mimics a page that contains that component,
 // we craft a test query that uses the fragments of the component we're testing.
@@ -137,14 +146,12 @@ const testQuery = graphql`
   }
 `;
 
-// This needs to match what we queried in our test query
 const mockQueryPayload = {
-  Query() {
+  ProjectRevision() {
     const result: ProjectContactForm_projectRevision = {
       " $fragmentType": "ProjectContactForm_projectRevision",
       id: "Test Project Revision ID",
       rowId: 1234,
-      ... etc ...
     };
     return result;
   },
@@ -156,7 +163,6 @@ const mockQueryPayload = {
 const defaultComponentProps = {
   setValidatingForm: jest.fn(),
   onSubmit: jest.fn(),
-  ... etc ...
 };
 
 const componentTestingHelper =
@@ -165,26 +171,22 @@ const componentTestingHelper =
     testQuery: testQuery,
     compiledQuery: compiledProjectContactFormQuery,
     getPropsFromTestQuery: (data) => ({
-      // This is how to build the props for the component we're testing, based on our test query
       query: data.query,
       projectRevision: data.query.projectRevision,
     }),
     defaultQueryResolver: mockQueryPayload,
     defaultQueryVariables: {},
-    // Additional default props for the component
     defaultComponentProps: defaultComponentProps,
   });
 
 describe("the test suite", () => {
   beforeEach(() => {
-    // reinit the helper before each test
     componentTestingHelper.reinit();
   });
   it(...){
     componentTestingHelper.loadQuery()
-    componentTestingHelper.renderComponent() // or if you need extra props for a particular test: componentTestingHelper.renderComponent(undefined, {...defaultComponentProps, extraProps })
+    componentTestingHelper.renderComponent()
 
-    ... same testing as with the page helper ...
   }
 })
 
