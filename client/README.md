@@ -6,9 +6,9 @@ The `ComponentTestingHelper` class provides the following:
 
 - `environment` - the test relay environment to assert or configure the query generator
 - `loadQuery(optional_resolver_override)` - preloads the Relay query for rendering
-- `renderComponent()` renders the component with the react testing library - accessible through `screen`
+- `renderComponent()` - renders the component with the React testing library - accessible through `screen`
 - `expectMutationToBeCalled(mutation_name, variables_mutation_should_be_called with)` - checks if the expected mutation was called; optionally checks if it was called with the correct variables
-- `rerenderComponent` - ??
+- `rerenderComponent` - re-renders the component
 
 ### How to use the Component Testing Helper in a Test File
 
@@ -30,8 +30,7 @@ import Mutation from "path_to_mutation";
 1. Create a `testQuery`:
 
 ```typescript
-// The query mimics a page that contains that component,
-// we craft a test query that uses the fragments of the component we're testing.
+// The query mimics a page that contains that component. We craft a test query that uses the fragments of the component we're testing.
 const testQuery = graphql`
   # Add 'Test' before 'Query'
   query ComponentTestQuery @relay_test_operation {
@@ -45,7 +44,7 @@ const testQuery = graphql`
 
 1. Run your relay compiler to generate the `ComponentTestQuery`-associated files
 
-1. Import the compiled query (default export) and `ComponentTestQuery` from `./**generated**/ComponentTestingHelperQuery.graphql`
+1. Import the compiled query (default export) and `ComponentTestQuery` from `./**generated**/ComponentTestingHelperQuery.graphql`:
 
 ```typescript
 import compiledComponentTestQuery, {
@@ -75,9 +74,11 @@ const mockQueryPayload = {
 };
 ```
 
-1. If desired, create `getPropsFromTestQuery` ??
+1. If desired, create `defaultQueryVariables` for the component that is being tested. For example:
 
-1. If desired, create `defaultQueryVariables` ??
+```typescript
+const defaultQueryVariables = { id: "mock-id" };
+```
 
 1. If desired, create `defaultComponentProps` for the component that is being tested. For example:
 
@@ -87,7 +88,7 @@ const defaultComponentProps = {
 };
 ```
 
-1. Instantiate the `componentTestingHelper`
+1. Instantiate the `componentTestingHelper`:
 
 ```typescript
 const componentTestingHelper = new ComponentTestingHelper<ComponentTestQuery>({
@@ -99,13 +100,13 @@ const componentTestingHelper = new ComponentTestingHelper<ComponentTestQuery>({
     query: data.query,
   }),
   defaultQueryResolver: mockQueryPayload,
-  defaultQueryVariables: {},
+  defaultQueryVariables: defaultQueryVariables || {},
   // Additional default props for the component
   defaultComponentProps: defaultComponentProps,
 });
 ```
 
-1. Create the test suite, ensuring to call `reinit` on the `componentTestingHelper` in the `beforeEach` block
+1. Create the test suite, ensuring to call `reinit` on the `componentTestingHelper` in the `beforeEach` block:
 
 ```typescript
 describe("the test suite", () => {
@@ -121,8 +122,6 @@ describe("the test suite", () => {
   }
 })
 ```
-
-// ----------------------------------------------------------------------------------------------------------------------------------------
 
 ### Example
 
