@@ -1,1 +1,2 @@
-export * from "./tests/ComponentTestingHelper";
+import ComponentTestingHelper from "./tests/ComponentTestingHelper";
+module.exports = ComponentTestingHelper;
