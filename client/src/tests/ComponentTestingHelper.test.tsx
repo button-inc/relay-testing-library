@@ -46,7 +46,7 @@ const componentTestingHelper =
   new ComponentTestingHelper<ComponentTestingHelperQuery>({
     component: TodoList,
     testQuery: testQuery,
-    compiledQuery: compiledTodoListQuery,
+    compiledQuery: compiledComponentTestingHelperQuery,
     getPropsFromTestQuery: (data) => ({
       query: data.query,
     }),
