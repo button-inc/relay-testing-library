@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "declaration": true,
     "target": "esnext",
     "lib": [
       "dom",
@@ -19,13 +20,12 @@
     "isolatedModules": true,
     "noEmit": false,
     "jsx": "react-jsx",
-    "declaration": true,
     "strictNullChecks": false,
     "outDir": "dist",
     "sourceMap": true,
     "rootDir": "src"
 
   },
-  "include": ["src", "index.ts"],
+  "include": ["src", "src/index.ts"],
   "exclude": ["node_modules", "dist"]
 }
