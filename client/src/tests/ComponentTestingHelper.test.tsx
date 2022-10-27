@@ -7,7 +7,7 @@ import { commitMutation, graphql } from "react-relay";
 import TodoList from "../components/TodoList";
 import CreateTodoMutation from "../components/__generated__/CreateTodoMutation.graphql";
 import ComponentTestingHelper from "./ComponentTestingHelper";
-import compiledTodoListQuery, {
+import compiledComponentTestingHelperQuery, {
   ComponentTestingHelperQuery,
 } from "./__generated__/ComponentTestingHelperQuery.graphql";
 
