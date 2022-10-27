@@ -1,6 +1,6 @@
 {
   "name": "@button-inc/relay-testing-library",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A relay component testing helper",
   "author": "Button Inc.",
   "license": "Apache-2.0",
