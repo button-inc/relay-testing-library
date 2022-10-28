@@ -1089,10 +1089,9 @@
     clsx "^1.1.1"
     styled-components "^5.2.1"
 
-"@button-inc/relay-testing-library@^0.0.4":
+"@button-inc/relay-testing-library@../packages/relay-testing-library/button-inc-relay-testing-library-0.0.4.tgz":
   version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@button-inc/relay-testing-library/-/relay-testing-library-0.0.4.tgz#4c6ac163e5b764e703d4a298df33a18e22e3bd9e"
-  integrity sha512-fPfk2fnbLRuZEVQRWS2bCByPlVIt+iI/O8sQjZGKad0uSpO1hp3TeaYSKx3Re+FC8dBRr/fXuSN9Mcl0bCaJvQ==
+  resolved "../packages/relay-testing-library/button-inc-relay-testing-library-0.0.4.tgz#287d67831d962350a0dda3491e91d7073e941301"
   dependencies:
     "@button-inc/component-library" "^1.0.3"
     "@types/jest" "^27.4.1"
