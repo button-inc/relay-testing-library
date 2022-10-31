@@ -16,7 +16,7 @@ The `ComponentTestingHelper` class provides the following:
 
 1. In `Component.test.tsx`, import the Component Testing Helper:
 
-`import ComponentTestingHelper from "@??";`
+`import ComponentTestingHelper from "@button-inc/relay-testing-helper";`
 
 1. In `Component.test.tsx`, import the component and mutation(s) you want to test:
 
@@ -44,83 +44,101 @@ const testQuery = graphql`
 1. In `Component.test.tsx`, import
 
 ### Example
+Check out `example-app/src/tests/ComponentTestingHelper.test.tsx` for an example of the testing helper in use with an example Todo app
+
+Before running the example test
+`cd example-app`
+`yarn install`
+`yarn relay`
+`yarn test`
+
 
 ```typescript
-import ProjectContactForm from "components/Form/ProjectContactForm";
-import compiledProjectContactFormQuery, {
-  ProjectContactFormQuery,
-} from "__generated__/ProjectContactFormQuery.graphql";
-
-import ComponentTestingHelper from "@TBD";
-import ComponentUnderTest from "path_to_component";
-import MutationUnderTest from "path_to_mutation";
-import compiledComponetUnderTestQuery, {
+import "@testing-library/jest-dom";
+import { screen } from "@testing-library/react";
+import { commitMutation, graphql } from "react-relay";
+import TodoList from "../components/TodoList";
+import CreateTodoMutation from "../components/__generated__/CreateTodoMutation.graphql";
+import ComponentTestingHelper from "@button-inc/relay-testing-library";
+import compiledComponentTestingHelperQuery, {
   ComponentTestingHelperQuery,
 } from "./__generated__/ComponentTestingHelperQuery.graphql";
 
-// The query mimics a page that contains that component,
-// we craft a test query that uses the fragments of the component we're testing.
 const testQuery = graphql`
-  query ProjectContactFormQuery @relay_test_operation {
+  query ComponentTestingHelperQuery @relay_test_operation {
     query {
       # Spread the fragment you want to test here
-      ...ProjectContactForm_query
-      projectRevision(id: "Test Project Revision ID") {
-        ...ProjectContactForm_projectRevision
-      }
+      ...TodoList_query
     }
   }
 `;
 
-// This needs to match what we queried in our test query
 const mockQueryPayload = {
-  ProjectRevision() {
-    const result: ProjectContactForm_projectRevision = {
-      " $fragmentType": "ProjectContactForm_projectRevision",
-      id: "Test Project Revision ID",
-      rowId: 1234,
-      ... etc ...
-    };
-    return result;
-  },
   Query() {
-    ...
-  }
-}
+    return {
+      allTodos: {
+        edges: [
+          {
+            node: {
+              id: "1",
+              task: "test operator",
+              completed: true,
+            },
+          },
+        ],
+      },
+    };
+  },
+};
 
 const defaultComponentProps = {
-  setValidatingForm: jest.fn(),
   onSubmit: jest.fn(),
-  ... etc ...
 };
 
 const componentTestingHelper =
-  new ComponentTestingHelper<ProjectContactFormQuery>({
-    component: ProjectContactForm,
+  new ComponentTestingHelper<ComponentTestingHelperQuery>({
+    component: TodoList,
     testQuery: testQuery,
-    compiledQuery: compiledProjectContactFormQuery,
+    compiledQuery: compiledComponentTestingHelperQuery,
     getPropsFromTestQuery: (data) => ({
-      // This is how to build the props for the component we're testing, based on our test query
       query: data.query,
-      projectRevision: data.query.projectRevision,
     }),
     defaultQueryResolver: mockQueryPayload,
     defaultQueryVariables: {},
-    // Additional default props for the component
     defaultComponentProps: defaultComponentProps,
   });
 
-describe("the test suite", () => {
+describe("ComponentTestingHelper", () => {
   beforeEach(() => {
+    jest.restoreAllMocks();
     // reinit the helper before each test
     componentTestingHelper.reinit();
   });
-  it(...){
-    componentTestingHelper.loadQuery()
-    componentTestingHelper.renderComponent() // or if you need extra props for a particular test: componentTestingHelper.renderComponent(undefined, {...defaultComponentProps, extraProps })
 
-    ... same testing as with the page helper ...
-  }
+  it("initializes the component testing helper", () => {
+    expect(componentTestingHelper.environment).toEqual(expect.anything());
+    expect(componentTestingHelper.expectMutationToBeCalled).toBeInstanceOf(
+      Function
+    );
+    expect(componentTestingHelper.reinit).toEqual(expect.any(Function));
+    expect(componentTestingHelper.loadQuery).toEqual(expect.any(Function));
+    expect(componentTestingHelper.rerenderComponent).toEqual(
+      expect.any(Function)
+    );
+  });
+
+  it("loads the query", () => {
+    componentTestingHelper.loadQuery();
+    expect(
+      componentTestingHelper.environment.mock.getAllOperations()[0].root.node
+        .name
+    ).toEqual("ComponentTestingHelperQuery");
+  });
+
+  it("renders the component", () => {
+    componentTestingHelper.loadQuery();
+    componentTestingHelper.renderComponent();
+    expect(screen.getByText("test operator")).toBeInTheDocument();
+  });
 })
-
 ```
