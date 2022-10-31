@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<16cda74c584af63a064e7db37ced8d55>>
+ * @generated SignedSource<<b717a534f5a23e38f66a841c5dd04662>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -33,8 +33,8 @@ export type TodoListItemUpdateMutation$data = {
   } | null;
 };
 export type TodoListItemUpdateMutation = {
-  variables: TodoListItemUpdateMutation$variables;
   response: TodoListItemUpdateMutation$data;
+  variables: TodoListItemUpdateMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){

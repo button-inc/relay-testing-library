@@ -1,7 +1,3 @@
-// remove errorcontextprovider and router (cause it's in next
-// next stuff in a separate package, thi pakage is about relay
-// only do component testing helper, combine with testing helper
-// v1.1 give component testing helper an array of context providers and their initial value, work as a generic solution
 import React from "react";
 import { render } from "@testing-library/react";
 import { MockPayloadGenerator } from "relay-test-utils";
@@ -12,7 +8,7 @@ import {
   OperationType,
 } from "relay-runtime";
 import { MockResolvers } from "relay-test-utils/lib/RelayMockPayloadGenerator";
-import TestingHelper from "./TestingHelper";
+import { createMockEnvironment, RelayMockEnvironment } from "relay-test-utils";
 
 interface ComponentTestingHelperOptions<TQuery extends OperationType> {
   component: (props: any) => JSX.Element;
@@ -24,15 +20,62 @@ interface ComponentTestingHelperOptions<TQuery extends OperationType> {
   defaultComponentProps?: any;
 }
 
-class ComponentTestingHelper<
-  TQuery extends OperationType
-> extends TestingHelper {
+class ComponentTestingHelper<TQuery extends OperationType> {
   private options: ComponentTestingHelperOptions<TQuery>;
+
+  public environment: RelayMockEnvironment;
+
+  public reinit() {
+    this.environment = createMockEnvironment();
+  }
+
+  public expectMutationToBeCalled(mutationName: string, variables?: any) {
+    try {
+      // eslint-disable-next-line jest/no-standalone-expect
+      expect(this.environment.mock.getAllOperations()).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            fragment: expect.objectContaining({
+              node: expect.objectContaining({
+                type: "Mutation",
+                name: mutationName,
+              }),
+            }),
+            request: expect.objectContaining({
+              variables,
+            }),
+          }),
+        ])
+      );
+    } catch (e) {
+      const allMutations = this.environment.mock
+        .getAllOperations()
+        .filter((op) => op?.fragment?.node?.type === "Mutation");
+
+      const matchingReceivedMutations = allMutations.filter(
+        (op) => op.fragment.node.name === mutationName
+      );
+
+      if (matchingReceivedMutations.length === 0) {
+        throw new Error(
+          `Expected mutation ${mutationName} to be called. Mutations called:\n` +
+            `${allMutations.map((op) => op.fragment.node.name).join(", ")}`
+        );
+      } else
+        throw new Error(
+          `Expected mutation ${mutationName} to be called with:\n` +
+            `${JSON.stringify(variables, null, 2)}\n` +
+            `received:` +
+            `${matchingReceivedMutations.map(
+              (op) => `\n${JSON.stringify(op.request.variables, null, 2)}`
+            )}`
+        );
+    }
+  }
 
   public renderResult;
 
   constructor(options: ComponentTestingHelperOptions<TQuery>) {
-    super();
     this.options = {
       getPropsFromTestQuery: () => ({}),
       defaultQueryResolver: {},
@@ -68,13 +111,8 @@ class ComponentTestingHelper<
       this.options.testQuery,
       this.options.defaultQueryVariables
     );
-    console.log("this", this.options.component);
-    return (
-      <this.options.component
-        {...getPropsFromTestQuery(data)} // do we even need getPropsFromTestQuery? too CIF-specific?
-        {...extraProps}
-      />
-    );
+    const Component = this.options.component;
+    return <Component {...getPropsFromTestQuery(data)} {...extraProps} />;
   };
 
   public renderComponent(

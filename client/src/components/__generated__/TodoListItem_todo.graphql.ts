@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e967ddf2d5131aa125458a58cab81b3d>>
+ * @generated SignedSource<<64c59860b485443ee6b9da93c3a76d44>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,9 +11,9 @@
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type TodoListItem_todo$data = {
+  readonly completed: boolean;
   readonly id: string;
   readonly task: string;
-  readonly completed: boolean;
   readonly " $fragmentType": "TodoListItem_todo";
 };
 export type TodoListItem_todo$key = {

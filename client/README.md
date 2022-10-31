@@ -1,46 +1,126 @@
-# Getting Started with Create React App
+## Relay Component Testing Helper
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Features
 
-## Available Scripts
+The `ComponentTestingHelper` class provides the following:
 
-In the project directory, you can run:
+- `environment` - the test relay environment to assert or configure the query generator
+- `loadQuery(optional_resolver_override)` - preloads the Relay query for rendering
+- `renderComponent()` renders the component with the react testing library - accessible through `screen`
+- `expectMutationToBeCalled(mutation_name, variables_mutation_should_be_called with)` - checks if the expected mutation was called; optionally checks if it was called with the correct variables
+- `rerenderComponent` - ??
 
-### `npm start`
+### How-to
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. Create a jest test file called `Component.test.tsx`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. In `Component.test.tsx`, import the Component Testing Helper:
 
-### `npm test`
+`import ComponentTestingHelper from "@??";`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. In `Component.test.tsx`, import the component and mutation(s) you want to test:
 
-### `npm run build`
+```typescript
+import Component from "path_to_component";
+import Mutation from "path_to_mutation";
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. In `Component.test.tsx`, create a `testQuery`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```typescript
+const testQuery = graphql`
+  # Add 'Test' before 'Query'
+  query ComponentTestQuery @relay_test_operation {
+    query {
+      # Spread the fragment you want to test here
+      ...Component_query
+    }
+  }
+`;
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Run your relay compiler to create the `ComponentTestQuery`
 
-### `npm run eject`
+1. In `Component.test.tsx`, import
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Example
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```typescript
+import ProjectContactForm from "components/Form/ProjectContactForm";
+import compiledProjectContactFormQuery, {
+  ProjectContactFormQuery,
+} from "__generated__/ProjectContactFormQuery.graphql";
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+import ComponentTestingHelper from "@TBD";
+import ComponentUnderTest from "path_to_component";
+import MutationUnderTest from "path_to_mutation";
+import compiledComponetUnderTestQuery, {
+  ComponentTestingHelperQuery,
+} from "./__generated__/ComponentTestingHelperQuery.graphql";
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+// The query mimics a page that contains that component,
+// we craft a test query that uses the fragments of the component we're testing.
+const testQuery = graphql`
+  query ProjectContactFormQuery @relay_test_operation {
+    query {
+      # Spread the fragment you want to test here
+      ...ProjectContactForm_query
+      projectRevision(id: "Test Project Revision ID") {
+        ...ProjectContactForm_projectRevision
+      }
+    }
+  }
+`;
 
-## Learn More
+// This needs to match what we queried in our test query
+const mockQueryPayload = {
+  ProjectRevision() {
+    const result: ProjectContactForm_projectRevision = {
+      " $fragmentType": "ProjectContactForm_projectRevision",
+      id: "Test Project Revision ID",
+      rowId: 1234,
+      ... etc ...
+    };
+    return result;
+  },
+  Query() {
+    ...
+  }
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const defaultComponentProps = {
+  setValidatingForm: jest.fn(),
+  onSubmit: jest.fn(),
+  ... etc ...
+};
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+const componentTestingHelper =
+  new ComponentTestingHelper<ProjectContactFormQuery>({
+    component: ProjectContactForm,
+    testQuery: testQuery,
+    compiledQuery: compiledProjectContactFormQuery,
+    getPropsFromTestQuery: (data) => ({
+      // This is how to build the props for the component we're testing, based on our test query
+      query: data.query,
+      projectRevision: data.query.projectRevision,
+    }),
+    defaultQueryResolver: mockQueryPayload,
+    defaultQueryVariables: {},
+    // Additional default props for the component
+    defaultComponentProps: defaultComponentProps,
+  });
+
+describe("the test suite", () => {
+  beforeEach(() => {
+    // reinit the helper before each test
+    componentTestingHelper.reinit();
+  });
+  it(...){
+    componentTestingHelper.loadQuery()
+    componentTestingHelper.renderComponent() // or if you need extra props for a particular test: componentTestingHelper.renderComponent(undefined, {...defaultComponentProps, extraProps })
+
+    ... same testing as with the page helper ...
+  }
+})
+
+```

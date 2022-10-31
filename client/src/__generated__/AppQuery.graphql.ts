@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b98d3920d92f3ba7123acbbc8c237a68>>
+ * @generated SignedSource<<19b6985f66d5a822bb36777ca5c682c5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,8 +15,8 @@ export type AppQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"TodoList_query">;
 };
 export type AppQuery = {
-  variables: AppQuery$variables;
   response: AppQuery$data;
+  variables: AppQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){

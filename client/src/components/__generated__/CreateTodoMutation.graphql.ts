@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d521ab1257125fec233595f5439b06fb>>
+ * @generated SignedSource<<23cf0d22142e9a095008fe7275874958>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -34,8 +34,8 @@ export type CreateTodoMutation$data = {
   } | null;
 };
 export type CreateTodoMutation = {
-  variables: CreateTodoMutation$variables;
   response: CreateTodoMutation$data;
+  variables: CreateTodoMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
