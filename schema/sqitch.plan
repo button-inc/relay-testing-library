@@ -1,0 +1,7 @@
+%syntax-version=1.0.0
+%project=todo_app
+
+todo_appschema 2022-02-23T22:43:21Z Brianna Cerkiewicz <briannacerkiewicz@pop-os> # Add schema for all todo objects.
+todos [todo_appschema] 2022-02-23T22:48:12Z Brianna Cerkiewicz <briannacerkiewicz@pop-os> # Create table to hold todos.
+insert_todo [todos todo_appschema] 2022-02-23T23:18:41Z Brianna Cerkiewicz <briannacerkiewicz@pop-os> # Creates a function to insert a todo.
+seed_todo [insert_todo todos todo_appschema] 2022-02-24T00:23:11Z Brianna Cerkiewicz <briannacerkiewicz@pop-os> # Creates seed todos.

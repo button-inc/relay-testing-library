@@ -1,0 +1,47 @@
+{
+  "name": "relay-testing-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/button-inc/relay-testing-library.git"
+  },
+  "author": "Brianna Cerkiewicz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/button-inc/relay-testing-library/issues"
+  },
+  "homepage": "https://github.com/button-inc/relay-testing-library#readme",
+  "dependencies": {
+    "@babel/core": "^7.19.3",
+    "@babel/preset-env": "^7.19.4",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@testing-library/react": "^13.4.0",
+    "@types/jest": "^29.1.2",
+    "@types/react": "^18.0.21",
+    "babel-jest": "^29.1.2",
+    "jest": "^29.2.0",
+    "jest-environment-jsdom": "^29.2.0",
+    "jest-extended": "^3.1.0",
+    "next": "^12.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-relay": "^14.1.0",
+    "react-test-renderer": "^18.2.0",
+    "relay-nextjs": "^0.10.0",
+    "relay-test-utils": "^14.1.0",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "babel-plugin-relay": "^14.1.0",
+    "graphql": "^16.6.0"
+  }
+}
