@@ -1,126 +1,84 @@
-## Relay Component Testing Helper
+# Onboarding Guide: Todo App
 
-### Features
+A guide to help developers onboard to the Button stack by building a simple todo app.
 
-The `ComponentTestingHelper` class provides the following:
+The goals are:
 
-- `environment` - the test relay environment to assert or configure the query generator
-- `loadQuery(optional_resolver_override)` - preloads the Relay query for rendering
-- `renderComponent()` renders the component with the react testing library - accessible through `screen`
-- `expectMutationToBeCalled(mutation_name, variables_mutation_should_be_called with)` - checks if the expected mutation was called; optionally checks if it was called with the correct variables
-- `rerenderComponent` - ??
+1. Create a [working todo app](#user-stories) in order to learn by discovery, decoupled from any project-specific context in which this stack may be used.
 
-### How-to
+2. Make a series of **draft** pull requests against the main branch for the purposes of demonstration / archive and peer review.
 
-1. Create a jest test file called `Component.test.tsx`
+Previous solutions by other developers are accessible in this repository's pull requests; viewer's discretion is advised 😉.
 
-1. In `Component.test.tsx`, import the Component Testing Helper:
+## Preparation
 
-`import ComponentTestingHelper from "@??";`
+Ensure that:
 
-1. In `Component.test.tsx`, import the component and mutation(s) you want to test:
+1. [Postgres](https://www.postgresql.org/) is installed.
+2. [Sqitch](https://sqitch.org/) is installed (requires a working Perl 5 installation).
+3. [Node](https://nodejs.org/) is installed.
+4. This repository has been cloned, or forked somewhere that you have push permissions and can share your solutions with your team.
+5. For each step, you have checked out a new branch with your name as a prefix: `myname/this-step`
+6. After completing a step, create a **draft** pull request with the previous step's branch as the base; these pull requests are not intended to be merged.
+7. Request review from someone who can help.
 
-```typescript
-import Component from "path_to_component";
-import Mutation from "path_to_mutation";
-```
+## User Stories
 
-1. In `Component.test.tsx`, create a `testQuery`.
+As a user, I can:
 
-```typescript
-const testQuery = graphql`
-  # Add 'Test' before 'Query'
-  query ComponentTestQuery @relay_test_operation {
-    query {
-      # Spread the fragment you want to test here
-      ...Component_query
-    }
-  }
-`;
-```
+- [ ] View all todos
+- [ ] Mark existing todos as completed
+- [ ] Add new todos to the list
+- [ ] See the list in the same state between browser refreshes
 
-1. Run your relay compiler to create the `ComponentTestQuery`
+<div align="center">
+  <img src="./todo-demo.gif" style="max-width: 300px;" alt="Todo list demo"/>
+</div>
 
-1. In `Component.test.tsx`, import
+## Step 1: Database
 
-### Example
+1. Ensure a Postgres service is running.
+2. Create a new database for the purpose of this project.
+3. Create a `schema/` folder for database things, and from there [initialize a new Sqitch project](https://sqitch.org/docs/manual/).
+4. Use Sqitch to create a new schema, `todo_app` in the project database.
 
-```typescript
-import ProjectContactForm from "components/Form/ProjectContactForm";
-import compiledProjectContactFormQuery, {
-  ProjectContactFormQuery,
-} from "__generated__/ProjectContactFormQuery.graphql";
+\* **Note**: Entities' dependencies (such as a table that depends on a schema) can be expressed to Sqitch at the time of creation using the `--requires` flag. These will show up n the `sqitch.plan` in square brackets next to the name of the created entity. Sqitch will ensure dependencies are deployed first.
 
-import ComponentTestingHelper from "@TBD";
-import ComponentUnderTest from "path_to_component";
-import MutationUnderTest from "path_to_mutation";
-import compiledComponetUnderTestQuery, {
-  ComponentTestingHelperQuery,
-} from "./__generated__/ComponentTestingHelperQuery.graphql";
+5. Use Sqitch to create a table in this schema\* (see note) with the following attributes:
+  - `id`
+  - `task`
+  - `completed`
+  - `date_created`
+  - `date_updated`
 
-// The query mimics a page that contains that component,
-// we craft a test query that uses the fragments of the component we're testing.
-const testQuery = graphql`
-  query ProjectContactFormQuery @relay_test_operation {
-    query {
-      # Spread the fragment you want to test here
-      ...ProjectContactForm_query
-      projectRevision(id: "Test Project Revision ID") {
-        ...ProjectContactForm_projectRevision
-      }
-    }
-  }
-`;
+  **Pro tip**: Insert some seed data into this table for testing the next few steps.
 
-// This needs to match what we queried in our test query
-const mockQueryPayload = {
-  ProjectRevision() {
-    const result: ProjectContactForm_projectRevision = {
-      " $fragmentType": "ProjectContactForm_projectRevision",
-      id: "Test Project Revision ID",
-      rowId: 1234,
-      ... etc ...
-    };
-    return result;
-  },
-  Query() {
-    ...
-  }
-}
+  ## Step 2: Postgraphile API
 
-const defaultComponentProps = {
-  setValidatingForm: jest.fn(),
-  onSubmit: jest.fn(),
-  ... etc ...
-};
+[Postgraphile](https://www.graphile.org/postgraphile/) can generate a GraphQL API based on our Postgres database, so for the sake of simplicity for this project, there's no need to build a Node backend.
 
-const componentTestingHelper =
-  new ComponentTestingHelper<ProjectContactFormQuery>({
-    component: ProjectContactForm,
-    testQuery: testQuery,
-    compiledQuery: compiledProjectContactFormQuery,
-    getPropsFromTestQuery: (data) => ({
-      // This is how to build the props for the component we're testing, based on our test query
-      query: data.query,
-      projectRevision: data.query.projectRevision,
-    }),
-    defaultQueryResolver: mockQueryPayload,
-    defaultQueryVariables: {},
-    // Additional default props for the component
-    defaultComponentProps: defaultComponentProps,
-  });
+1. `npm init` to initialize a `package.json` for the project.
+2. Install [Postgraphile](https://www.graphile.org/postgraphile/) and run it pointing at the project's database.
+3. Open the Graphiql (a graphical UI for GraphQL queries) instance that should be live at `/graphiql` on localhost once Postgraphile is running.
+4. Confirm that GraphQL is introspecting your Postgres schema by querying the todos you inserted in the previous step.
 
-describe("the test suite", () => {
-  beforeEach(() => {
-    // reinit the helper before each test
-    componentTestingHelper.reinit();
-  });
-  it(...){
-    componentTestingHelper.loadQuery()
-    componentTestingHelper.renderComponent() // or if you need extra props for a particular test: componentTestingHelper.renderComponent(undefined, {...defaultComponentProps, extraProps })
+## Step 3: Front end
 
-    ... same testing as with the page helper ...
-  }
-})
+1. Use [Create React App](https://create-react-app.dev/) with Typescript to bootstrap the client:
 
-```
+`npx create-react-app client --template typescript`
+
+2. Add [Relay](https://relay.dev/) to the client.
+
+## Step 4: Build TodoList components
+
+1. Build `TodoList` and `TodoListItem` components, each using a [Relay fragment](https://relay.dev/docs/guided-tour/rendering/fragments/) for data.
+2. Ensure that data requirements for each component are specified using GraphQL. Using Graphiql can help you refine this.
+
+## Step 5: Build CreateTodo component
+
+Make a simple [mutation-based](https://relay.dev/docs/en/mutations) component for adding new todos to the list.
+
+## Step 6: Write unit tests
+
+Use [Jest](https://jestjs.io/) to test client side components.
