@@ -8,7 +8,7 @@ The `ComponentTestingHelper` class provides the following:
 - `loadQuery(optional_resolver_override)` - preloads the Relay query for rendering
 - `renderComponent()` renders the component with the react testing library - accessible through `screen`
 - `expectMutationToBeCalled(mutation_name, variables_mutation_should_be_called with)` - checks if the expected mutation was called; optionally checks if it was called with the correct variables
-- `rerenderComponent` - ??
+- `rerenderComponent` - rerenders the component
 
 ### How-to
 
