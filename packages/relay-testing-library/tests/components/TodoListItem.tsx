@@ -2,8 +2,8 @@ import React from "react";
 import { graphql } from "babel-plugin-relay/macro";
 import { useFragment, commitMutation } from "react-relay/hooks";
 import type { TodoListItem_todo$key } from "./__generated__/TodoListItem_todo.graphql";
-import Checkbox from "@button-inc/component-library/Checkbox";
-import RelayEnvironment from "../../../packages/relay-testing-library/tests/RelayEnvironment";
+// import Checkbox from '@button-inc/component-library/Checkbox'
+import RelayEnvironment from "../RelayEnvironment";
 
 type Props = {
   //$key includes data and fragment reference
@@ -57,7 +57,7 @@ function TodoListItem(props: Props) {
   };
 
   return (
-    <Checkbox
+    <input
       className={"checkbox"}
       label={data.task}
       defaultChecked={data.completed}

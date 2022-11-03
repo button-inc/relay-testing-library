@@ -1,9 +1,7 @@
 import React from "react";
 import { commitMutation } from "react-relay";
 import { graphql } from "babel-plugin-relay/macro";
-import Button from "@button-inc/component-library/Button";
-import Input from "@button-inc/component-library/Input";
-import RelayEnvironment from "../../../packages/relay-testing-library/tests/RelayEnvironment";
+import RelayEnvironment from "../RelayEnvironment";
 
 // need connection when making new one because relay doesn't have existing id
 const CreateTodoMutation = graphql`
@@ -45,10 +43,10 @@ function CreateTodo(props) {
 
   return (
     <div className="add">
-      <Input className="add" id={"newTodo"} />
-      <Button className="add" onClick={submit}>
+      <input className="add" id={"newTodo"} />
+      <button className="add" onClick={submit}>
         Add
-      </Button>
+      </button>
     </div>
   );
 }
