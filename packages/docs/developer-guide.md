@@ -27,7 +27,7 @@ This will give the closest to production experience for using the published npm 
 1. Publish the target package to NPM registry using Make command.
    - In the target directory,
    ```
-        npm publish --allow public
+        npm publish --access public
    ```
    - it copies `package.json`, `LICENSE`, and `README.md` files into `lib` directory to publish the packages based off `lib` directory.
 1. Merge the release branch into `develop`.
