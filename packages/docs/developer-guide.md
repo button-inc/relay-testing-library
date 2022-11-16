@@ -4,6 +4,18 @@
 
 To build, run `yarn prepack` to transpile Typescript code to both `commonjs` and `esm` and store the output in the `/lib` directory.
 
+### Test 
+
+Prior to publishing the package to NPM registry, test the package locally using `npm pack` to package up and zip your npm package into a single file (button-inc-relay-testing-library-<version>.tgz). 
+
+You can then go to the project you want to use the package in and install it via this file. The steps to do this are as follows:
+1. From the `relay-testing-library` directory, run `npm pack`
+1. Change directories to `cd ../../example-app/` 
+1. run `yarn add ../../packages/relay-testing-library/button-inc-relay-testing-library-<version>.tgz`
+1. run `yarn test` to run the jest test suite in `ComponentTestingHelper.test.tsx` and ensure tests are passing. 
+
+This will give the closest to production experience for using the published npm package.
+
 #### Publish Packages to NPM Registry
 
 1. Create a new branch off `main` called [issue#]-release
