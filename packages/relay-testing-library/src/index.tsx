@@ -1,3 +1,5 @@
+// This code is based on work completed by the Province of BC for [cas-cif](https://github.com/bcgov/cas-cif), special thanks to [Pierre Bastianelli](https://github.com/pbastia) 
+
 import React from "react";
 import { render } from "@testing-library/react";
 import { MockPayloadGenerator } from "relay-test-utils";
