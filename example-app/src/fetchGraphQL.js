@@ -9,9 +9,9 @@ async function fetchGraphQL(text, variables) {
         variables,
       }),
     });
-  
+
     // Get the response as JSON
     return await response.json();
   }
-  
+
   export default fetchGraphQL;

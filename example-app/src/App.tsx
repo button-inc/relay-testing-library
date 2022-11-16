@@ -39,10 +39,10 @@ function App(props) {
     <div className="App">
       <header className="App-header">
       </header>
-       
+
         <div className={"list"}>
           <TodoList query={data} />
-         
+
         </div>
     </div>
   );

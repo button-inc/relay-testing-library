@@ -33,7 +33,7 @@ function CreateTodo(props) {
       variables: {
         connections: [props.connectionId],
         input: {
-        
+
         todo: {
           task: input
         }
@@ -45,7 +45,7 @@ function CreateTodo(props) {
         console.log('error is:',error)
       } /* Mutation errored */,
     });
-    
+
 
   }
 

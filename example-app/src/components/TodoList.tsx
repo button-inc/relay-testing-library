@@ -9,7 +9,7 @@ import { useFragment } from 'react-relay/hooks';
 
 
 type Props = {
-    
+
     query: any
 }
 
@@ -33,7 +33,7 @@ function TodoList({query}: Props) {
         query,
       );
 
-      const listItems = data.allTodos.edges.map(todo => 
+      const listItems = data.allTodos.edges.map(todo =>
         <TodoListItem
             key={todo.node.id}
             todo={todo.node}
