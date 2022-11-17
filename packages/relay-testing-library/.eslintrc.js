@@ -1,10 +1,10 @@
 module.exports = {
-  extends: ["airbnb-typescript", "next", "plugin:relay/strict", "prettier"],
+  extends: ['airbnb-typescript', 'next', 'plugin:relay/strict', 'prettier'],
   env: { es6: true, browser: true, node: true },
-  plugins: ["jest", "relay"],
-  parser: "@typescript-eslint/parser",
+  plugins: ['jest', 'relay'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ["./tsconfig.json"],
+    project: ['./tsconfig.json'],
   },
   rules: {
     // "react/prop-types": 0, // don't need react/prop-types when components are typed with typescript
@@ -18,12 +18,12 @@ module.exports = {
     //   "error",
     //   { devDependencies: ["tests/**/*", "cypress/**/*"] },
     // ],
-    "import/extensions": [
-      "error",
-      "never",
+    'import/extensions': [
+      'error',
+      'never',
       {
-        graphql: "always",
-        json: "always",
+        graphql: 'always',
+        json: 'always',
       },
     ],
     // "global-require": 0,
@@ -35,37 +35,34 @@ module.exports = {
     // "import/newline-after-import": 0,
     // "import/order": 0,
     // "@typescript-eslint/lines-between-class-members": 0,
-    "relay/generated-flow-types": 0, // we are not using flow
+    'relay/generated-flow-types': 0, // we are not using flow
   },
   overrides: [
     {
-      files: ["tests/**/*"],
-      extends: "plugin:jest/recommended",
+      files: ['tests/**/*'],
+      extends: 'plugin:jest/recommended',
       rules: {
-        "jest/expect-expect": [
-          "warn",
+        'jest/expect-expect': [
+          'warn',
           {
-            assertFunctionNames: ["expect", "*.expectMutationToBeCalled"],
+            assertFunctionNames: ['expect', '*.expectMutationToBeCalled'],
           },
         ],
       },
     },
     {
-      files: ["cypress/**/*.js"],
-      extends: ["plugin:cypress/recommended"],
+      files: ['cypress/**/*.js'],
+      extends: ['plugin:cypress/recommended'],
       parserOptions: {
-        project: "cypress/tsconfig.json",
+        project: 'cypress/tsconfig.json',
       },
       rules: {
-        "jest/valid-expect-in-promise": 0,
-        "jest/no-focused-tests": 2,
-        "promise/prefer-await-to-then": 0,
-        "no-unused-expressions": 0,
-        "cypress/no-unnecessary-waiting": 0,
-        "import/no-extraneous-dependencies": [
-          "error",
-          { devDependencies: true },
-        ],
+        'jest/valid-expect-in-promise': 0,
+        'jest/no-focused-tests': 2,
+        'promise/prefer-await-to-then': 0,
+        'no-unused-expressions': 0,
+        'cypress/no-unnecessary-waiting': 0,
+        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
       },
     },
   ],

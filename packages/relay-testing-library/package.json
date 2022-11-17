@@ -10,6 +10,8 @@
     "lib/**/*"
   ],
   "scripts": {
+    "format": "git ls-files '*.js' '*.jsx' '*.ts' '*.tsx' | xargs prettier --write",
+    "lint": "git ls-files '*.js' '*.jsx' '*.ts' '*.tsx' | xargs yarn eslint",
     "clean": "rm -rf ./lib",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
