@@ -45,15 +45,16 @@ As a user, I can:
 \* **Note**: Entities' dependencies (such as a table that depends on a schema) can be expressed to Sqitch at the time of creation using the `--requires` flag. These will show up n the `sqitch.plan` in square brackets next to the name of the created entity. Sqitch will ensure dependencies are deployed first.
 
 5. Use Sqitch to create a table in this schema\* (see note) with the following attributes:
-  - `id`
-  - `task`
-  - `completed`
-  - `date_created`
-  - `date_updated`
 
-  **Pro tip**: Insert some seed data into this table for testing the next few steps.
+- `id`
+- `task`
+- `completed`
+- `date_created`
+- `date_updated`
 
-  ## Step 2: Postgraphile API
+**Pro tip**: Insert some seed data into this table for testing the next few steps.
+
+## Step 2: Postgraphile API
 
 [Postgraphile](https://www.graphile.org/postgraphile/) can generate a GraphQL API based on our Postgres database, so for the sake of simplicity for this project, there's no need to build a Node backend.
 

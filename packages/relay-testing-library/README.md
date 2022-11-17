@@ -21,8 +21,8 @@ The `ComponentTestingHelper` class provides the following:
 1. In `Component.test.tsx`, import the component and mutation(s) you want to test:
 
 ```typescript
-import Component from "path_to_component";
-import Mutation from "path_to_mutation";
+import Component from 'path_to_component';
+import Mutation from 'path_to_mutation';
 ```
 
 1. In `Component.test.tsx`, create a `testQuery`.
@@ -44,6 +44,7 @@ const testQuery = graphql`
 1. In `Component.test.tsx`, import
 
 ### Example
+
 Check out `example-app/src/tests/ComponentTestingHelper.test.tsx` for an example of the testing helper in use with an example Todo app
 
 Before running the example test
@@ -52,17 +53,16 @@ Before running the example test
 `yarn relay`
 `yarn test`
 
-
 ```typescript
-import "@testing-library/jest-dom";
-import { screen } from "@testing-library/react";
-import { commitMutation, graphql } from "react-relay";
-import TodoList from "../components/TodoList";
-import CreateTodoMutation from "../components/__generated__/CreateTodoMutation.graphql";
-import ComponentTestingHelper from "@button-inc/relay-testing-library";
+import '@testing-library/jest-dom';
+import { screen } from '@testing-library/react';
+import { commitMutation, graphql } from 'react-relay';
+import TodoList from '../components/TodoList';
+import CreateTodoMutation from '../components/__generated__/CreateTodoMutation.graphql';
+import ComponentTestingHelper from '@button-inc/relay-testing-library';
 import compiledComponentTestingHelperQuery, {
   ComponentTestingHelperQuery,
-} from "./__generated__/ComponentTestingHelperQuery.graphql";
+} from './__generated__/ComponentTestingHelperQuery.graphql';
 
 const testQuery = graphql`
   query ComponentTestingHelperQuery @relay_test_operation {
@@ -80,8 +80,8 @@ const mockQueryPayload = {
         edges: [
           {
             node: {
-              id: "1",
-              task: "test operator",
+              id: '1',
+              task: 'test operator',
               completed: true,
             },
           },
@@ -95,50 +95,44 @@ const defaultComponentProps = {
   onSubmit: jest.fn(),
 };
 
-const componentTestingHelper =
-  new ComponentTestingHelper<ComponentTestingHelperQuery>({
-    component: TodoList,
-    testQuery: testQuery,
-    compiledQuery: compiledComponentTestingHelperQuery,
-    getPropsFromTestQuery: (data) => ({
-      query: data.query,
-    }),
-    defaultQueryResolver: mockQueryPayload,
-    defaultQueryVariables: {},
-    defaultComponentProps: defaultComponentProps,
-  });
+const componentTestingHelper = new ComponentTestingHelper<ComponentTestingHelperQuery>({
+  component: TodoList,
+  testQuery: testQuery,
+  compiledQuery: compiledComponentTestingHelperQuery,
+  getPropsFromTestQuery: data => ({
+    query: data.query,
+  }),
+  defaultQueryResolver: mockQueryPayload,
+  defaultQueryVariables: {},
+  defaultComponentProps: defaultComponentProps,
+});
 
-describe("ComponentTestingHelper", () => {
+describe('ComponentTestingHelper', () => {
   beforeEach(() => {
     jest.restoreAllMocks();
     // reinit the helper before each test
     componentTestingHelper.reinit();
   });
 
-  it("initializes the component testing helper", () => {
+  it('initializes the component testing helper', () => {
     expect(componentTestingHelper.environment).toEqual(expect.anything());
-    expect(componentTestingHelper.expectMutationToBeCalled).toBeInstanceOf(
-      Function
-    );
+    expect(componentTestingHelper.expectMutationToBeCalled).toBeInstanceOf(Function);
     expect(componentTestingHelper.reinit).toEqual(expect.any(Function));
     expect(componentTestingHelper.loadQuery).toEqual(expect.any(Function));
-    expect(componentTestingHelper.rerenderComponent).toEqual(
-      expect.any(Function)
+    expect(componentTestingHelper.rerenderComponent).toEqual(expect.any(Function));
+  });
+
+  it('loads the query', () => {
+    componentTestingHelper.loadQuery();
+    expect(componentTestingHelper.environment.mock.getAllOperations()[0].root.node.name).toEqual(
+      'ComponentTestingHelperQuery'
     );
   });
 
-  it("loads the query", () => {
-    componentTestingHelper.loadQuery();
-    expect(
-      componentTestingHelper.environment.mock.getAllOperations()[0].root.node
-        .name
-    ).toEqual("ComponentTestingHelperQuery");
-  });
-
-  it("renders the component", () => {
+  it('renders the component', () => {
     componentTestingHelper.loadQuery();
     componentTestingHelper.renderComponent();
-    expect(screen.getByText("test operator")).toBeInTheDocument();
+    expect(screen.getByText('test operator')).toBeInTheDocument();
   });
-})
+});
 ```

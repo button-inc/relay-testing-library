@@ -16,18 +16,16 @@ repos:
     hooks:
       - id: prettier
         name: Prettier
-        language: system
-        files: \.(j|t)sx?$
-        entry: bash -c 'yarn format'
-        pass_filenames: false
+        language: script
+        entry: ./.bin/pre-commit-format.sh
+        stages: [commit]
   - repo: local
     hooks:
       - id: eslint
         name: ESLint
-        language: system
-        files: \.(j|t)sx?$
-        entry: bash -c 'yarn lint'
-        pass_filenames: false
+        language: script
+        entry: ./.bin/pre-commit-lint.sh
+        stages: [commit]
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.12.0
     hooks:

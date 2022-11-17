@@ -44,16 +44,16 @@ const testQuery = graphql`
 1. In `Component.test.tsx`, import
 
 ### Example
+
 Check out `example-app/src/tests/ComponentTestingHelper.test.tsx` for an example of the testing helper in use with an example Todo app
 
 It is not necessary but you can run the example todo app using the instructions [here](./example-app/README.md)
 
 Before running the example test
-`cd example-app`  go into the example-app directory
-`yarn install`    install the necessary dependencies
-`yarn relay`      compile relay
-`yarn test`       run the jest test suite
-
+`cd example-app` go into the example-app directory
+`yarn install` install the necessary dependencies
+`yarn relay` compile relay
+`yarn test` run the jest test suite
 
 ```typescript
 import "@testing-library/jest-dom";
@@ -142,5 +142,5 @@ describe("ComponentTestingHelper", () => {
     componentTestingHelper.renderComponent();
     expect(screen.getByText("test operator")).toBeInTheDocument();
   });
-})
+});
 ```

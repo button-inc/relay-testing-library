@@ -1,22 +1,22 @@
-import React from 'react';
-import graphql from 'babel-plugin-relay/macro';
+import React from "react";
+import graphql from "babel-plugin-relay/macro";
 import {
   RelayEnvironmentProvider,
   loadQuery,
   usePreloadedQuery,
-} from 'react-relay/hooks';
-import RelayEnvironment from './RelayEnvironment';
-import TodoList from './components/TodoList';
-import CreateTodo from './components/CreateTodo';
+} from "react-relay/hooks";
+import RelayEnvironment from "./RelayEnvironment";
+import TodoList from "./components/TodoList";
+import CreateTodo from "./components/CreateTodo";
 
 const { Suspense } = React;
 
 // Define a query
 //relay doesn't like it if you spread within a root query
 const AppAllTodosQuery = graphql`
-query AppQuery {
+  query AppQuery {
     ...TodoList_query
-}
+  }
 `;
 
 // Immediately load the query as our app starts. For a real app, we'd move this
@@ -37,13 +37,11 @@ function App(props) {
   const data = usePreloadedQuery(AppAllTodosQuery, props.preloadedQuery);
   return (
     <div className="App">
-      <header className="App-header">
-      </header>
+      <header className="App-header"></header>
 
-        <div className={"list"}>
-          <TodoList query={data} />
-
-        </div>
+      <div className={"list"}>
+        <TodoList query={data} />
+      </div>
     </div>
   );
 }
@@ -63,8 +61,6 @@ function AppRoot(props) {
       <App preloadedQuery={preloadedQuery} />
     );
   return (
-
-
     <RelayEnvironmentProvider environment={RelayEnvironment}>
       {component}
     </RelayEnvironmentProvider>
