@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "format": "prettier --write .",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "lint": "eslint '**/*.{jsx,js,.ts,.tsx}' ./",
     "clean": "rm -rf ./lib",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",

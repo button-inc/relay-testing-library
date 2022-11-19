@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['airbnb-typescript', 'prettier', 'plugin:relay/strict'],
+  extends: ['airbnb-typescript', 'prettier', 'plugin:relay/strict', 'next'],
   env: { es6: true, browser: true, node: true },
   plugins: ['jest', 'relay', 'import', 'react-hooks'],
   parser: '@typescript-eslint/parser',
@@ -9,12 +9,12 @@ module.exports = {
   },
   root: true,
   rules: {
-    "import/extensions": [
-      "error",
-      "never",
+    'import/extensions': [
+      'error',
+      'never',
       {
-        graphql: "always",
-        json: "always",
+        graphql: 'always',
+        json: 'always',
       },
     ],
     '@typescript-eslint/dot-notation': 0,
@@ -37,7 +37,7 @@ module.exports = {
     'react/require-default-props': 0,
     'react/no-unescaped-entities': 0,
     'import/no-mutable-exports': 0,
-    'relay/generated-flow-types': "warn",
+    'relay/generated-flow-types': 0, // we are not using flow
   },
   overrides: [],
 };
