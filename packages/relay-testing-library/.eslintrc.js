@@ -1,7 +1,7 @@
 module.exports = {
-  extends: ['airbnb-typescript', 'prettier', 'next', 'plugin:relay/strict'],
+  extends: ['airbnb-typescript', 'prettier', 'plugin:relay/strict'],
   env: { es6: true, browser: true, node: true },
-  plugins: ['jest'],
+  plugins: ['jest', 'relay', 'import', 'react-hooks'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './configs/tsconfig.base.json',
@@ -9,6 +9,14 @@ module.exports = {
   },
   root: true,
   rules: {
+    "import/extensions": [
+      "error",
+      "never",
+      {
+        graphql: "always",
+        json: "always",
+      },
+    ],
     '@typescript-eslint/dot-notation': 0,
     '@typescript-eslint/naming-convention': 0,
     '@typescript-eslint/no-shadow': 0,
@@ -29,6 +37,7 @@ module.exports = {
     'react/require-default-props': 0,
     'react/no-unescaped-entities': 0,
     'import/no-mutable-exports': 0,
+    'relay/generated-flow-types': "warn",
   },
   overrides: [],
 };
