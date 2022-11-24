@@ -1,0 +1,43 @@
+module.exports = {
+  extends: ['airbnb-typescript', 'prettier', 'plugin:relay/strict', 'next'],
+  env: { es6: true, browser: true, node: true },
+  plugins: ['jest', 'relay', 'import', 'react-hooks'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './configs/tsconfig.base.json',
+    createDefaultProgram: true,
+  },
+  root: true,
+  rules: {
+    'import/extensions': [
+      'error',
+      'never',
+      {
+        graphql: 'always',
+        json: 'always',
+      },
+    ],
+    '@typescript-eslint/dot-notation': 0,
+    '@typescript-eslint/naming-convention': 0,
+    '@typescript-eslint/no-shadow': 0,
+    '@typescript-eslint/no-unused-vars': 0,
+    'func-names': 0,
+    'import/no-extraneous-dependencies': 0,
+    'import/no-unresolved': 0,
+    'import/prefer-default-export': 0,
+    'no-console': 0,
+    'no-underscore-dangle': 0,
+    'no-param-reassign': 0,
+    'no-nested-ternary': 0,
+    'react/destructuring-assignment': 0,
+    'react/jsx-filename-extension': 0,
+    'react/jsx-props-no-spreading': 0,
+    'react/prop-types': 0,
+    'react/react-in-jsx-scope': 0,
+    'react/require-default-props': 0,
+    'react/no-unescaped-entities': 0,
+    'import/no-mutable-exports': 0,
+    'relay/generated-flow-types': 0, // we are not using flow
+  },
+  overrides: [],
+};

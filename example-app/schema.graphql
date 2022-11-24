@@ -1,4 +1,6 @@
-"""All input for the create `Todo` mutation."""
+"""
+All input for the create `Todo` mutation.
+"""
 input CreateTodoInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -6,11 +8,15 @@ input CreateTodoInput {
   """
   clientMutationId: String
 
-  """The `Todo` to be created by this mutation."""
+  """
+  The `Todo` to be created by this mutation.
+  """
   todo: TodoInput!
 }
 
-"""The output of our create `Todo` mutation."""
+"""
+The output of our create `Todo` mutation.
+"""
 type CreateTodoPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -23,17 +29,25 @@ type CreateTodoPayload {
   """
   query: Query
 
-  """The `Todo` that was created by this mutation."""
+  """
+  The `Todo` that was created by this mutation.
+  """
   todo: Todo
 
-  """An edge for our `Todo`. May be used by Relay 1."""
+  """
+  An edge for our `Todo`. May be used by Relay 1.
+  """
   todoEdge(
-    """The method to use when ordering `Todo`."""
+    """
+    The method to use when ordering `Todo`.
+    """
     orderBy: [TodosOrderBy!] = [PRIMARY_KEY_ASC]
   ): TodosEdge
 }
 
-"""A location in a connection that can be used for resuming pagination."""
+"""
+A location in a connection that can be used for resuming pagination.
+"""
 scalar Cursor
 
 """
@@ -42,7 +56,9 @@ A point in time as described by the [ISO
 """
 scalar Datetime
 
-"""All input for the `deleteTodoByRowId` mutation."""
+"""
+All input for the `deleteTodoByRowId` mutation.
+"""
 input DeleteTodoByRowIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -52,7 +68,9 @@ input DeleteTodoByRowIdInput {
   rowId: Int!
 }
 
-"""All input for the `deleteTodo` mutation."""
+"""
+All input for the `deleteTodo` mutation.
+"""
 input DeleteTodoInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -66,7 +84,9 @@ input DeleteTodoInput {
   id: ID!
 }
 
-"""The output of our delete `Todo` mutation."""
+"""
+The output of our delete `Todo` mutation.
+"""
 type DeleteTodoPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -80,17 +100,25 @@ type DeleteTodoPayload {
   """
   query: Query
 
-  """The `Todo` that was deleted by this mutation."""
+  """
+  The `Todo` that was deleted by this mutation.
+  """
   todo: Todo
 
-  """An edge for our `Todo`. May be used by Relay 1."""
+  """
+  An edge for our `Todo`. May be used by Relay 1.
+  """
   todoEdge(
-    """The method to use when ordering `Todo`."""
+    """
+    The method to use when ordering `Todo`.
+    """
     orderBy: [TodosOrderBy!] = [PRIMARY_KEY_ASC]
   ): TodosEdge
 }
 
-"""All input for the `insertTodo` mutation."""
+"""
+All input for the `insertTodo` mutation.
+"""
 input InsertTodoInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -101,7 +129,9 @@ input InsertTodoInput {
   task: String
 }
 
-"""The output of our `insertTodo` mutation."""
+"""
+The output of our `insertTodo` mutation.
+"""
 type InsertTodoPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -119,7 +149,9 @@ type InsertTodoPayload {
 The root mutation type which contains root level fields which mutate data.
 """
 type Mutation {
-  """Creates a single `Todo`."""
+  """
+  Creates a single `Todo`.
+  """
   createTodo(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -127,7 +159,9 @@ type Mutation {
     input: CreateTodoInput!
   ): CreateTodoPayload
 
-  """Deletes a single `Todo` using its globally unique id."""
+  """
+  Deletes a single `Todo` using its globally unique id.
+  """
   deleteTodo(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -135,7 +169,9 @@ type Mutation {
     input: DeleteTodoInput!
   ): DeleteTodoPayload
 
-  """Deletes a single `Todo` using a unique key."""
+  """
+  Deletes a single `Todo` using a unique key.
+  """
   deleteTodoByRowId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -149,7 +185,9 @@ type Mutation {
     input: InsertTodoInput!
   ): InsertTodoPayload
 
-  """Updates a single `Todo` using its globally unique id and a patch."""
+  """
+  Updates a single `Todo` using its globally unique id and a patch.
+  """
   updateTodo(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -157,7 +195,9 @@ type Mutation {
     input: UpdateTodoInput!
   ): UpdateTodoPayload
 
-  """Updates a single `Todo` using a unique key and a patch."""
+  """
+  Updates a single `Todo` using a unique key and a patch.
+  """
   updateTodoByRowId(
     """
     The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields.
@@ -166,7 +206,9 @@ type Mutation {
   ): UpdateTodoPayload
 }
 
-"""An object with a globally unique `ID`."""
+"""
+An object with a globally unique `ID`.
+"""
 interface Node {
   """
   A globally unique identifier. Can be used in various places throughout the system to identify this single value.
@@ -174,29 +216,47 @@ interface Node {
   id: ID!
 }
 
-"""Information about pagination in a connection."""
+"""
+Information about pagination in a connection.
+"""
 type PageInfo {
-  """When paginating forwards, the cursor to continue."""
+  """
+  When paginating forwards, the cursor to continue.
+  """
   endCursor: Cursor
 
-  """When paginating forwards, are there more items?"""
+  """
+  When paginating forwards, are there more items?
+  """
   hasNextPage: Boolean!
 
-  """When paginating backwards, are there more items?"""
+  """
+  When paginating backwards, are there more items?
+  """
   hasPreviousPage: Boolean!
 
-  """When paginating backwards, the cursor to continue."""
+  """
+  When paginating backwards, the cursor to continue.
+  """
   startCursor: Cursor
 }
 
-"""The root query type which gives access points into the data universe."""
+"""
+The root query type which gives access points into the data universe.
+"""
 type Query implements Node {
-  """Reads and enables pagination through a set of `Todo`."""
+  """
+  Reads and enables pagination through a set of `Todo`.
+  """
   allTodos(
-    """Read all values in the set after (below) this cursor."""
+    """
+    Read all values in the set after (below) this cursor.
+    """
     after: Cursor
 
-    """Read all values in the set before (above) this cursor."""
+    """
+    Read all values in the set before (above) this cursor.
+    """
     before: Cursor
 
     """
@@ -204,10 +264,14 @@ type Query implements Node {
     """
     condition: TodoCondition
 
-    """Only read the first `n` values of the set."""
+    """
+    Only read the first `n` values of the set.
+    """
     first: Int
 
-    """Only read the last `n` values of the set."""
+    """
+    Only read the last `n` values of the set.
+    """
     last: Int
 
     """
@@ -216,7 +280,9 @@ type Query implements Node {
     """
     offset: Int
 
-    """The method to use when ordering `Todo`."""
+    """
+    The method to use when ordering `Todo`.
+    """
     orderBy: [TodosOrderBy!] = [PRIMARY_KEY_ASC]
   ): TodosConnection
 
@@ -225,9 +291,13 @@ type Query implements Node {
   """
   id: ID!
 
-  """Fetches an object given its globally unique `ID`."""
+  """
+  Fetches an object given its globally unique `ID`.
+  """
   node(
-    """The globally unique `ID`."""
+    """
+    The globally unique `ID`.
+    """
     id: ID!
   ): Node
 
@@ -237,9 +307,13 @@ type Query implements Node {
   """
   query: Query!
 
-  """Reads a single `Todo` using its globally unique `ID`."""
+  """
+  Reads a single `Todo` using its globally unique `ID`.
+  """
   todo(
-    """The globally unique `ID` to be used in selecting a single `Todo`."""
+    """
+    The globally unique `ID` to be used in selecting a single `Todo`.
+    """
     id: ID!
   ): Todo
   todoByRowId(rowId: Int!): Todo
@@ -262,23 +336,35 @@ type Todo implements Node {
 A condition to be used against `Todo` object types. All fields are tested for equality and combined with a logical ‘and.’
 """
 input TodoCondition {
-  """Checks for equality with the object’s `completed` field."""
+  """
+  Checks for equality with the object’s `completed` field.
+  """
   completed: Boolean
 
-  """Checks for equality with the object’s `dateCreated` field."""
+  """
+  Checks for equality with the object’s `dateCreated` field.
+  """
   dateCreated: Datetime
 
-  """Checks for equality with the object’s `dateUpdated` field."""
+  """
+  Checks for equality with the object’s `dateUpdated` field.
+  """
   dateUpdated: Datetime
 
-  """Checks for equality with the object’s `rowId` field."""
+  """
+  Checks for equality with the object’s `rowId` field.
+  """
   rowId: Int
 
-  """Checks for equality with the object’s `task` field."""
+  """
+  Checks for equality with the object’s `task` field.
+  """
   task: String
 }
 
-"""An input for mutations affecting `Todo`"""
+"""
+An input for mutations affecting `Todo`
+"""
 input TodoInput {
   completed: Boolean
   dateCreated: Datetime
@@ -286,7 +372,9 @@ input TodoInput {
   task: String!
 }
 
-"""Represents an update to a `Todo`. Fields that are set will be updated."""
+"""
+Represents an update to a `Todo`. Fields that are set will be updated.
+"""
 input TodoPatch {
   completed: Boolean
   dateCreated: Datetime
@@ -294,33 +382,49 @@ input TodoPatch {
   task: String
 }
 
-"""A connection to a list of `Todo` values."""
+"""
+A connection to a list of `Todo` values.
+"""
 type TodosConnection {
   """
   A list of edges which contains the `Todo` and cursor to aid in pagination.
   """
   edges: [TodosEdge!]!
 
-  """A list of `Todo` objects."""
+  """
+  A list of `Todo` objects.
+  """
   nodes: [Todo]!
 
-  """Information to aid in pagination."""
+  """
+  Information to aid in pagination.
+  """
   pageInfo: PageInfo!
 
-  """The count of *all* `Todo` you could get from the connection."""
+  """
+  The count of *all* `Todo` you could get from the connection.
+  """
   totalCount: Int!
 }
 
-"""A `Todo` edge in the connection."""
+"""
+A `Todo` edge in the connection.
+"""
 type TodosEdge {
-  """A cursor for use in pagination."""
+  """
+  A cursor for use in pagination.
+  """
   cursor: Cursor
 
-  """The `Todo` at the end of the edge."""
+  """
+  The `Todo` at the end of the edge.
+  """
   node: Todo
 }
 
-"""Methods to use when ordering `Todo`."""
+"""
+Methods to use when ordering `Todo`.
+"""
 enum TodosOrderBy {
   COMPLETED_ASC
   COMPLETED_DESC
@@ -337,7 +441,9 @@ enum TodosOrderBy {
   TASK_DESC
 }
 
-"""All input for the `updateTodoByRowId` mutation."""
+"""
+All input for the `updateTodoByRowId` mutation.
+"""
 input UpdateTodoByRowIdInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -352,7 +458,9 @@ input UpdateTodoByRowIdInput {
   todoPatch: TodoPatch!
 }
 
-"""All input for the `updateTodo` mutation."""
+"""
+All input for the `updateTodo` mutation.
+"""
 input UpdateTodoInput {
   """
   An arbitrary string value with no semantic meaning. Will be included in the
@@ -371,7 +479,9 @@ input UpdateTodoInput {
   todoPatch: TodoPatch!
 }
 
-"""The output of our update `Todo` mutation."""
+"""
+The output of our update `Todo` mutation.
+"""
 type UpdateTodoPayload {
   """
   The exact same `clientMutationId` that was provided in the mutation input,
@@ -384,12 +494,18 @@ type UpdateTodoPayload {
   """
   query: Query
 
-  """The `Todo` that was updated by this mutation."""
+  """
+  The `Todo` that was updated by this mutation.
+  """
   todo: Todo
 
-  """An edge for our `Todo`. May be used by Relay 1."""
+  """
+  An edge for our `Todo`. May be used by Relay 1.
+  """
   todoEdge(
-    """The method to use when ordering `Todo`."""
+    """
+    The method to use when ordering `Todo`.
+    """
     orderBy: [TodosOrderBy!] = [PRIMARY_KEY_ASC]
   ): TodosEdge
 }
