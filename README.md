@@ -1,4 +1,5 @@
 ## Relay Component Testing Helper
+This project is based on work completed by the Province of BC for [cas-cif](https://github.com/bcgov/cas-cif), special thanks to [Pierre Bastianelli](https://github.com/pbastia) 
 
 ### Features
 
