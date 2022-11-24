@@ -8,24 +8,26 @@ The `ComponentTestingHelper` class provides the following:
 - `loadQuery(optional_resolver_override)` - preloads the Relay query for rendering
 - `renderComponent()` renders the component with the react testing library - accessible through `screen`
 - `expectMutationToBeCalled(mutation_name, variables_mutation_should_be_called with)` - checks if the expected mutation was called; optionally checks if it was called with the correct variables
-- `rerenderComponent` - ??
+- `rerenderComponent` - rerenders the component
 
 ### How-to
 
-1. Create a jest test file called `Component.test.tsx`
+Where `Component` is the name of the component under test:
 
-1. In `Component.test.tsx`, import the Component Testing Helper:
+1. Create a jest test file called `Component.test.tsx`. All of the following instructions should be done in this file above the `describe` block unless indicated otherwise.
+
+2. In `Component.test.tsx`, import the Component Testing Helper:
 
 `import ComponentTestingHelper from "@button-inc/relay-testing-helper";`
 
-1. In `Component.test.tsx`, import the component and mutation(s) you want to test:
+3. In `Component.test.tsx`, import the component and mutation(s) you want to test:
 
 ```typescript
 import Component from "path_to_component";
 import Mutation from "path_to_mutation";
 ```
 
-1. In `Component.test.tsx`, create a `testQuery`.
+4. In `Component.test.tsx`, create a `testQuery`.
 
 ```typescript
 const testQuery = graphql`
@@ -39,9 +41,84 @@ const testQuery = graphql`
 `;
 ```
 
-1. Run your relay compiler to create the `ComponentTestQuery`
+5. Run your relay compiler to create the `ComponentTestQuery`
 
-1. In `Component.test.tsx`, import
+6. Import the compiled query (default export) and `ComponentTestQuery` from `./**generated**/ComponentTestingHelperQuery.graphql`:
+
+```typescript
+import compiledComponentTestQuery, {
+  ComponentTestQuery,
+} from "./**generated**/ComponentTestQuery.graphql";
+```
+
+7. Create a `mockQueryPayload` to mock some data to be passed to the component you want to test. It needs to match the schema of the `testQuery`. For example:
+
+```typescript
+// This needs to match what we queried in our test query
+const mockQueryPayload = {
+  Query() {
+    return {
+      allItems: {
+        edges: [
+          {
+            node: {
+              id: "1",
+              description: "this is a test",
+            },
+          },
+        ],
+      },
+    };
+  },
+};
+```
+
+8. If desired, create `defaultQueryVariables` for the component that is being tested. For example:
+
+```typescript
+const defaultQueryVariables = { id: "mock-id" };
+```
+
+9. If desired, create `defaultComponentProps` for the component that is being tested. For example:
+
+```typescript
+const defaultComponentProps = {
+  onSubmit: jest.fn(),
+};
+```
+
+10. Instantiate the `componentTestingHelper`:
+
+```typescript
+const componentTestingHelper = new ComponentTestingHelper<ComponentTestQuery>({
+  component: Component,
+  testQuery: testQuery,
+  compiledQuery: compiledComponentQuery,
+  getPropsFromTestQuery: (data) => ({
+    // This is how to build the props for the component we're testing, based on our test query
+    query: data.query,
+  }),
+  defaultQueryResolver: mockQueryPayload,
+  defaultQueryVariables: defaultQueryVariables || {},
+  // Additional default props for the component
+  defaultComponentProps: defaultComponentProps,
+});
+```
+
+11. Create the test suite, ensuring to call `reinit` on the `componentTestingHelper` in the `beforeEach` block:
+
+```typescript
+describe("the test suite", () => {
+  beforeEach(() => {
+    // reinit the helper before each test
+    componentTestingHelper.reinit();
+  });
+  it(...){
+    componentTestingHelper.loadQuery() // or if you need a different mock query than the default, componentTestingHelper.loadQuery(different_mock_query)
+    componentTestingHelper.renderComponent() // or if you need extra props for a particular test: componentTestingHelper.renderComponent(undefined, {...defaultComponentProps, extraProps })
+  }
+})
+```
 
 ### Example
 
@@ -54,93 +131,3 @@ Before running the example test
 `yarn install` install the necessary dependencies
 `yarn relay` compile relay
 `yarn test` run the jest test suite
-
-```typescript
-import "@testing-library/jest-dom";
-import { screen } from "@testing-library/react";
-import { commitMutation, graphql } from "react-relay";
-import TodoList from "../components/TodoList";
-import CreateTodoMutation from "../components/__generated__/CreateTodoMutation.graphql";
-import ComponentTestingHelper from "@button-inc/relay-testing-library";
-import compiledComponentTestingHelperQuery, {
-  ComponentTestingHelperQuery,
-} from "./__generated__/ComponentTestingHelperQuery.graphql";
-
-const testQuery = graphql`
-  query ComponentTestingHelperQuery @relay_test_operation {
-    query {
-      # Spread the fragment you want to test here
-      ...TodoList_query
-    }
-  }
-`;
-
-const mockQueryPayload = {
-  Query() {
-    return {
-      allTodos: {
-        edges: [
-          {
-            node: {
-              id: "1",
-              task: "test operator",
-              completed: true,
-            },
-          },
-        ],
-      },
-    };
-  },
-};
-
-const defaultComponentProps = {
-  onSubmit: jest.fn(),
-};
-
-const componentTestingHelper =
-  new ComponentTestingHelper<ComponentTestingHelperQuery>({
-    component: TodoList,
-    testQuery: testQuery,
-    compiledQuery: compiledComponentTestingHelperQuery,
-    getPropsFromTestQuery: (data) => ({
-      query: data.query,
-    }),
-    defaultQueryResolver: mockQueryPayload,
-    defaultQueryVariables: {},
-    defaultComponentProps: defaultComponentProps,
-  });
-
-describe("ComponentTestingHelper", () => {
-  beforeEach(() => {
-    jest.restoreAllMocks();
-    // reinit the helper before each test
-    componentTestingHelper.reinit();
-  });
-
-  it("initializes the component testing helper", () => {
-    expect(componentTestingHelper.environment).toEqual(expect.anything());
-    expect(componentTestingHelper.expectMutationToBeCalled).toBeInstanceOf(
-      Function
-    );
-    expect(componentTestingHelper.reinit).toEqual(expect.any(Function));
-    expect(componentTestingHelper.loadQuery).toEqual(expect.any(Function));
-    expect(componentTestingHelper.rerenderComponent).toEqual(
-      expect.any(Function)
-    );
-  });
-
-  it("loads the query", () => {
-    componentTestingHelper.loadQuery();
-    expect(
-      componentTestingHelper.environment.mock.getAllOperations()[0].root.node
-        .name
-    ).toEqual("ComponentTestingHelperQuery");
-  });
-
-  it("renders the component", () => {
-    componentTestingHelper.loadQuery();
-    componentTestingHelper.renderComponent();
-    expect(screen.getByText("test operator")).toBeInTheDocument();
-  });
-});
-```
